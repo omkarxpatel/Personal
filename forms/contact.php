@@ -1,29 +1,51 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-  // Replace contact@example.com with your real receiving email address
-  $receiving_email_address = 'omkarxpatel@gmail.com';
+// Load the PHPMailer class and its exceptions
+require 'vendor/autoload.php';
 
-  $contact = new PHP_Email_Form;
-  $contact->ajax = true;
-  
-  $contact->to = $receiving_email_address;
-  $contact->from_name = $_POST['name'];
-  $contact->from_email = $_POST['email'];
-  $contact->subject = $_POST['subject'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get form data
+    $name = $_POST["name"];
+    $email = $_POST["email"];
+    $subject = $_POST["subject"];
+    $message = $_POST["message"];
 
-  // Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
-  /*
-  $contact->smtp = array(
-    'host' => 'example.com',
-    'username' => 'example',
-    'password' => 'pass',
-    'port' => '587'
-  );
-  */
+    // Recipient email address
+    $to = "omkarvpatel1234@gmail.com";
 
-  $contact->add_message( $_POST['name'], 'From');
-  $contact->add_message( $_POST['email'], 'Email');
-  $contact->add_message( $_POST['message'], 'Message', 10);
+    // Create a new PHPMailer instance
+    $mail = new PHPMailer(true);
 
-  echo $contact->send();
+    try {
+        // SMTP settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com'; // Specify your SMTP server
+        $mail->SMTPAuth = true;
+        $mail->Username = 'omkarvpatel1234@gmail.com'; // SMTP username
+        $mail->Password = ''; // SMTP password
+        $mail->SMTPSecure = 'tls'; // Enable TLS encryption
+        $mail->Port = 587; // TCP port to connect to
+
+        // Sender information
+        $mail->setFrom($email, $name);
+
+        // Recipient
+        $mail->addAddress($to);
+
+        // Email content
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $message;
+
+        // Send the email
+        $mail->send();
+        echo "success";
+    } catch (Exception $e) {
+        echo "error: " . $mail->ErrorInfo;
+    }
+} else {
+    echo "Invalid request";
+}
 ?>
