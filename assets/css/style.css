@@ -20,7 +20,7 @@ body {
 body::before {
   content: "";
   position: fixed;
-  background: #040404 url("../img/brah.jpg") top right no-repeat;
+  background: #040404 url("../img/black.png") top right no-repeat;
   /* background: #040404; */
   background-size: cover;
   left: 0;
@@ -780,6 +780,12 @@ section .container {
   color: #18d26e;
 }
 
+.services .icon-box:hover .circle{
+  box-shadow: 0px 0px 40px 0px #fff;
+  border: 1px solid #fff;
+
+}
+
 .services .icon-box:hover .icon::before {
   background: #35e888;
 }
@@ -1186,4 +1192,17 @@ section .container {
   width: 100%;
   height: 100%;
   z-index: -1;
+}
+
+.circle {
+    width: 75px;
+    height: 75px;
+    border: 1px solid #18d26e;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    z-index: 9999; 
+    box-shadow: 0px 0px 40px 0px #18d26e;
 }
