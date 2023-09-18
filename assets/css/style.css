@@ -15,6 +15,7 @@ body {
   color: #fff;
   position: relative;
   background: transparent;
+  cursor: auto;
 }
 
 body::before {
@@ -1205,4 +1206,8 @@ section .container {
     background: transparent;
     z-index: 9999; 
     box-shadow: 0px 0px 40px 0px #18d26e;
+}
+
+.outline-cursor {
+  cursor: crosshair; /* Use the cursor style you want for the outline cursor */
 }
