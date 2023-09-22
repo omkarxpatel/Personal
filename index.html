@@ -481,7 +481,7 @@
 
         <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
           <div class="icon-box">
-            <div class="icon"><i class="ri-key-line"></i></i></div>
+            <div class="icon"><i class="ri-scissors-line"></i></i></div>
             <h4><a href="">Alex's Barbershop</a></h4>
             <p>Created a barbershop for Alex, a barber, that allows customers to book appointments and more online.</p>
             <br>
@@ -509,9 +509,28 @@
           </div>
         </div>
 
+        <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+          <div class="icon-box">
+            <div class="icon"><i class="ri-discord-fill"></i></i></div>
+            <h4><a href="">Ace Bot</a></h4>
+            <p>A now archived discord bot that was created in 2022 that reached a peak of 180,000 users.</p>
+            <br>
+            <span><a href="https://github.com/omkarxpatel/Ace-Bot/" class="link" target="_blank" style="text-decoration: underline;">View Code</a></span>
+          </div>
+        </div>
+        
+      <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+          <div class="icon-box">
+            <div class="icon"><i class="ri-contacts-book-2-line"></i></i></div>
+            <h4><a href="">Personal Website</a></h4>
+            <p>My older portfolio website that is now archived and my new website is the current one.</p>
+            <br>
+            <span><a href="https://omkarpatel.netlify.app/" class="link" target="_blank" style="text-decoration: underline;">View Live Demo</a></span>
+          </div>
+        </div>
       </div>
-
     </div>
+  </div>
   </section><!-- End Services Section -->
 
   <!-- ======= Portfolio Section ======= -->
@@ -718,7 +737,7 @@
         </div>
       </div>
 
-      <form action="forms/contact.php" method="post" role="form" class="php-email-form mt-4">
+      <form action="https://formspree.io/f/mwkdrryq" method="POST" role="form" class="php-email-form mt-4" onsubmit="return handleFormSubmit()">
         <div class="row">
           <div class="col-md-6 form-group">
             <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
@@ -736,10 +755,29 @@
         <div class="my-3">
           <div class="loading">Loading</div>
           <div class="error-message"></div>
-          <div class="sent-message">Your message has been sent. Thank you!</div>
+          <div class="sent-message" style="display: none;">Your message has been sent. Thank you!</div>
         </div>
         <div class="text-center"><button type="submit">Send Message</button></div>
       </form>
+
+      <script>
+        function handleFormSubmit(event) {
+          // Prevent the default form submission behavior
+          event.preventDefault();
+
+          // Hide the error message
+          document.querySelector(".error-message").style.display = "none";
+
+          // Show the "sent" message
+          document.querySelector(".sent-message").style.display = "block";
+        }
+
+        // Add an event listener to the form to call handleFormSubmit when submitted
+        document.querySelector(".php-email-form").addEventListener("submit", handleFormSubmit);
+      </script>
+
+
+
     </div>
   </section><!-- End Contact Section -->
 

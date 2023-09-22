@@ -1211,3 +1211,7 @@ section .container {
 .outline-cursor {
   cursor: crosshair; /* Use the cursor style you want for the outline cursor */
 }
+
+.error-message.d-block {
+    visibility: hidden;
+}
