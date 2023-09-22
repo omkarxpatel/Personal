@@ -762,17 +762,11 @@
 
       <script>
         function handleFormSubmit(event) {
-          // Prevent the default form submission behavior
           event.preventDefault();
-
-          // Hide the error message
           document.querySelector(".error-message").style.display = "none";
-
-          // Show the "sent" message
           document.querySelector(".sent-message").style.display = "block";
         }
 
-        // Add an event listener to the form to call handleFormSubmit when submitted
         document.querySelector(".php-email-form").addEventListener("submit", handleFormSubmit);
       </script>
 
