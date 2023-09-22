@@ -26,18 +26,14 @@ class PHP_Email_Form
         $this->headers .= "From: " . $this->from_name . " <" . $this->from_email . ">" . "\r\n";
 
         if ($this->smtp) {
-            // Implement SMTP sending logic here
-            // You will need to use a third-party library like PHPMailer or Swift Mailer
-            // to handle SMTP email sending.
-            // Example using PHPMailer:
-            // require_once('PHPMailerAutoload.php');
-            // $mail = new PHPMailer;
-            // ... Configure PHPMailer with SMTP settings ...
-            // if ($mail->send()) {
-            //     return true;
-            // } else {
-            //     return false;
-            // }
+
+            require_once('PHPMailerAutoload.php');
+            $mail = new PHPMailer;
+            if ($mail->send()) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             // Use the built-in mail() function for sending mail
             return mail($this->to, $this->subject, $this->message, $this->headers);
