@@ -1207,3 +1207,7 @@ section .container {
 .error-message.d-block {
     visibility: hidden;
 }
+
+.sent-message {
+    transform: translateY(-55px);
+}
