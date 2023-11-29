@@ -13,6 +13,7 @@ function updateCursorStyle(e) {
 
         if (window.matchMedia('(pointer: fine)').matches) {
             circle.classList.add('outline-cursor');
+            circle.style.display = "block";
         } else {
             circle.classList.remove('outline-cursor');
         }
