@@ -16,6 +16,7 @@ function updateCursorStyle(e) {
             circle.style.display = "block";
         } else {
             circle.classList.remove('outline-cursor');
+            circle.style.display = "none";
         }
     } else {
         // Hide the cursor if touch input is supported
