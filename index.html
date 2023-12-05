@@ -42,7 +42,7 @@
     <h1>
         <a href="index.html">
             <img src="assets/img/icons8-o-96.png" alt="Favicon" width="64" height="64"> <!-- Adjust the width and height as needed -->
-            <a class="first">Omkar</a> <span>Patel</span>.
+            <a class="first">Omkar</a> <span class="last">Patel</span>.
         </a>
     </h1>
       <!-- Uncomment below if you prefer to use an image logo -->
@@ -364,7 +364,8 @@
 
       </div>
 
-    </div>End Testimonials  -->
+    </div> -->
+<!-- End Testimonials  -->
 
   </section><!-- End About Section -->
 
@@ -792,7 +793,7 @@
           <div class="error-message"></div>
           <div class="sent-message" style="display: none;">Your message has been sent. Thank you!</div>
         </div>
-        <div class="text-center"><button type="submit">Send Message</button></div>
+        <div class="text-center"><button class="buttonSubmit" type="submit">Send Message</button></div>
       </form>
 
       <script>
@@ -800,6 +801,9 @@
           event.preventDefault();
           document.querySelector(".error-message").style.display = "none";
           document.querySelector(".sent-message").style.display = "block";
+          document.querySelector(".buttonSubmit").style.top = "-55px";
+          document.querySelector(".buttonSubmit").style.position = "relative";
+          console.log("DSFJKSDHFSDLKFHLASJFAd")
         }
 
         document.querySelector(".php-email-form").addEventListener("submit", handleFormSubmit);

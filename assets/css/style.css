@@ -97,17 +97,25 @@ h6 {
   color: #18d26e;
 }
 
-#header h1 span:hover {
-  color: #ffffff;
-}
+/* #header h1 span:hover {
+  color: #fff; 
+} */
+/* 
+.parent:hover .child {
+  color: red;
+} */
 
-#header h1 a.first:hover {
-  color: #18d26e;
-}
+/* #header h1 span:hover #last{
+  color: red; 
+} */
 
-#header h1 a.first:hover span {
-  color: #ffffff;
-}
+/* #header h1 a.first:hover .child {
+  color: red;
+} */
+
+/* #header h1 a.first:hover {
+  color: red;
+} */
 
 #header img {
   padding: 0;
