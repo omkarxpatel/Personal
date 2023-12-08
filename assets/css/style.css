@@ -29,6 +29,12 @@ body::before {
   }
 }
 
+@media (max-width: 800px) {
+  #myIcon {
+    display: none;
+  }
+}
+
 a {
   color: #18d26e;
   text-decoration: none;
@@ -472,6 +478,7 @@ section .container {
   position: relative;
   text-align: center;
   background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
 }
 
 .counts .count-box i {
@@ -546,6 +553,7 @@ section .container {
   padding: 20px;
   background: rgba(255, 255, 255, 0.08);
   transition: ease-in-out 0.3s;
+  border-radius: 10px;
 }
 
 .interests .icon-box i {
@@ -683,6 +691,7 @@ section .container {
   display: inline-block;
   font-weight: 600;
   margin-bottom: 10px;
+  border-radius: 10px;
 }
 
 .resume .resume-item ul {
@@ -718,6 +727,7 @@ section .container {
   padding: 80px 20px;
   transition: all ease-in-out 0.3s;
   margin-bottom: 20px;
+  border-radius: 10px;
 }
 
 .services .icon-box .icon {
