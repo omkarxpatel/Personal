@@ -148,7 +148,7 @@ h6 {
   color: #fff;
   line-height: 1;
   margin-right: 8px;
-  border-radius: 50%;
+  border-radius: 30%;
   width: 40px;
   height: 40px;
 }
@@ -1067,7 +1067,7 @@ section .container {
 .contact .info-box i.bx {
   font-size: 24px;
   color: #18d26e;
-  border-radius: 50%;
+  border-radius: 30%;
   padding: 14px;
   float: left;
   background: rgba(255, 255, 255, 0.1);
@@ -1165,11 +1165,15 @@ section .container {
   transition: 0.3s;
   color: #fff;
   border-radius: 10px;
+
 }
 
 .contact .php-email-form input:focus,
 .contact .php-email-form textarea:focus {
   background-color: rgba(255, 255, 255, 0.11);
+  border-style: solid;
+  border-color: #18d26e;
+  border-width: 2px;
 }
 
 .contact .php-email-form input::-moz-placeholder,
