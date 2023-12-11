@@ -1071,6 +1071,11 @@ section .container {
   padding: 14px;
   float: left;
   background: rgba(255, 255, 255, 0.1);
+
+  position: relative;
+  display: flex;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 .contact .info-box h3 {
