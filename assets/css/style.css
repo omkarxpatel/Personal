@@ -163,6 +163,10 @@ h6 {
   background: var(--main-theme);
 }
 
+/* #header .social-links a:hover i {
+  color: white;
+} */
+
 @media (max-width: 992px) {
   #header h1 {
     font-size: 36px;
@@ -313,7 +317,7 @@ h6 {
 #colorWheel::-webkit-color-swatch {
   border-radius: 10px;
   border-style: solid;
-  border-color: black;
+  border-color: white;
   border-width: 1px;
 }
 /**
@@ -778,7 +782,7 @@ section .container {
 }
 
 .services .icon-box .icon i {
-  color: #fff;
+  color: var(--main-hover-theme);
   font-size: 28px;
 }
 
@@ -1132,7 +1136,7 @@ section .container {
 }
 
 .contact .info-box .social-links a:hover {
-  color: var(--main-theme);
+  color: var(--main-hover-theme);
 }
 
 .contact .php-email-form {
