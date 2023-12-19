@@ -265,7 +265,7 @@ function calculateHarmoniousColor(color) {
 
     const adjustedHue = (getHue(r, g, b)) % 360;
 
-    const harmoniousColor = `hsl(${adjustedHue}, 100%, 50%)`;
+    const harmoniousColor = `hsl(${adjustedHue}, 50%, 50%)`;
 
     return harmoniousColor;
   }
