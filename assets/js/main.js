@@ -244,3 +244,49 @@
   new PureCounter();
 
 })()
+
+document.addEventListener('DOMContentLoaded', function () {
+  const colorWheel = document.getElementById('colorWheel');
+  const root = document.documentElement;
+
+  colorWheel.addEventListener('input', function () {
+    const selectedColor = colorWheel.value;
+    root.style.setProperty('--main-theme', selectedColor);
+
+    const complementaryHoverColor = calculateHarmoniousColor(selectedColor);
+    root.style.setProperty('--main-hover-theme', complementaryHoverColor);
+  });
+
+function calculateHarmoniousColor(color) {
+    const rgb = parseInt(color.slice(1), 16);
+    const r = (rgb >> 16) & 0xff;
+    const g = (rgb >>  8) & 0xff;
+    const b = (rgb >>  0) & 0xff;
+
+    const adjustedHue = (getHue(r, g, b)) % 360;
+
+    const harmoniousColor = `hsl(${adjustedHue}, 100%, 50%)`;
+
+    return harmoniousColor;
+  }
+
+  function getHue(r, g, b) {
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+
+    if (max === min) {
+      return 0;
+    }
+
+    const delta = max - min;
+    let hue;
+
+    switch (max) {
+      case r: hue = (g - b) / delta + (g < b ? 6 : 0); break;
+      case g: hue = (b - r) / delta + 2; break;
+      case b: hue = (r - g) / delta + 4; break;
+    }
+
+    return hue * 60;
+  }
+});
