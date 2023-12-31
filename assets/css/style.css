@@ -91,12 +91,12 @@ h6 {
   font-family: "Poppins", sans-serif;
 }
 
-#header h1 a,
+/* #header h1 a,
 #header h1 a:hover {
   color: #fff;
   line-height: 1;
   display: inline-block;
-}
+} */
 
 #header h2 {
   font-size: 24px;
@@ -114,25 +114,17 @@ h6 {
   color: var(--main-theme);
 }
 
-/* #header h1 span:hover {
-  color: #fff; 
-} */
-/* 
-.parent:hover .child {
-  color: red;
-} */
 
-/* #header h1 span:hover #last{
-  color: red; 
-} */
+#header h1 a, .section-title {
+  background: linear-gradient(90deg, white, white, var(--main-theme));
+  -webkit-background-clip: text;
+  color: transparent;
+  text-decoration: none; /* Remove underline from the link */
+}
 
-/* #header h1 a.first:hover .child {
-  color: red;
-} */
-
-/* #header h1 a.first:hover {
-  color: red;
-} */
+#header h1 a:hover {
+  text-decoration: underline; /* Add underline on hover */
+}
 
 #header img {
   padding: 0;
