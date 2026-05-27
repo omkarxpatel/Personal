@@ -1,0 +1,361 @@
+---
+import TerminalWindow from "./TerminalWindow.astro";
+import AsciiSig from "./AsciiSig.astro";
+import { getRepos } from "../lib/github-server.ts";
+
+const repos = await getRepos();
+---
+<TerminalWindow title="omkar@portfolio: ~">
+  <AsciiSig />
+
+  <script id="gh-data" type="application/json" is:inline set:html={JSON.stringify(repos)} />
+
+  <div id="t-boot" class="boot-hint">
+    type <a class="t-accent" data-cmd="help">help</a> to start.
+  </div>
+
+  <div id="t-output" class="output-stream" aria-live="polite" aria-atomic="false"></div>
+
+  <form id="t-form" class="input-row" autocomplete="off"><span class="prompt-line"><span class="t-user">omkar@portfolio</span><span class="t-dim">:</span><span class="t-path" id="t-cwd">~</span><span class="t-sigil"> $&nbsp;</span></span><input id="t-input" type="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="terminal input" enterkeyhint="go" /></form>
+</TerminalWindow>
+
+<style is:global>
+  /* color helpers used by command output html */
+  .t-text    { color: var(--color-text); }
+  .t-soft    { color: var(--color-soft); }
+  .t-muted   { color: var(--color-muted); }
+  .t-dim     { color: var(--color-dim); }
+  .t-user    { color: var(--color-user); }
+  .t-path    { color: var(--color-path); }
+  .t-sigil   { color: var(--color-sigil); }
+  .t-accent  { color: var(--color-accent); cursor: pointer; }
+  .t-accent:hover { text-decoration: underline; }
+  .t-warn    { color: var(--color-warn); }
+  .t-success { color: var(--color-success); }
+  .t-heading { color: var(--color-text); font-weight: 600; }
+
+  .boot-hint {
+    color: var(--color-muted);
+    margin-top: 0.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .output-stream { display: flex; flex-direction: column; gap: 2.25rem; }
+  .output-stream:empty { display: none; }
+
+  .t-suggest { margin-top: 0.35rem; }
+
+  .echo .prompt-line {
+    white-space: pre;
+    color: var(--color-text);
+  }
+  .echo .echo-output {
+    margin-top: 0.35rem;
+    color: var(--color-soft);
+  }
+  .echo .echo-output:empty { display: none; }
+
+  /* ls grid */
+  .ls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.25rem 1.5rem;
+  }
+  .ls-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .ls-meta { font-size: 0.8em; width: 2.25rem; text-align: right; flex-shrink: 0; }
+  .ls-name { cursor: pointer; }
+  .ls-name:hover { text-decoration: underline; }
+
+  /* tree */
+  pre.tree {
+    margin: 0;
+    line-height: 1.6;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* top (github activity) */
+  pre.top {
+    margin: 0;
+    line-height: 1.6;
+    white-space: pre;
+    overflow-x: auto;
+    font-family: inherit;
+  }
+  pre.top a {
+    border-bottom: none;
+  }
+  pre.top a:hover { text-decoration: underline; }
+
+  /* generic block layout for cat output */
+  .block { display: flex; flex-direction: column; gap: 0.5rem; }
+  .block .row { color: var(--color-text); }
+  .block p { color: var(--color-soft); }
+  .block .bullets { list-style: none; padding: 0; margin: 0.25rem 0 0 0; display: flex; flex-direction: column; gap: 0.35rem; }
+  .block .bullets li { display: flex; gap: 0.6rem; color: var(--color-soft); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .chip {
+    font-size: 0.78em;
+    padding: 0.05rem 0.55rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    color: var(--color-path);
+  }
+
+  /* skills / contact key-value */
+  dl.skills, dl.contact { display: flex; flex-direction: column; gap: 0.5rem; margin: 0; }
+  .kv { display: grid; grid-template-columns: 7rem 1fr; gap: 0.5rem 1rem; align-items: baseline; }
+  .kv dt { margin: 0; }
+  .kv dd { margin: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+  .links { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .t-tip { margin-top: 0.5rem; }
+
+  /* input row */
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 1.25rem;
+  }
+  .input-row .prompt-line {
+    white-space: pre;
+    flex-shrink: 0;
+  }
+  #t-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-text);
+    font: inherit;
+    caret-color: var(--color-text);
+    padding: 0;
+    min-width: 0;
+  }
+  #t-input:focus { outline: none; }
+
+  /* history list */
+  ol.hist { padding-left: 1.5rem; margin: 0; }
+
+  @media (max-width: 480px) {
+    .kv { grid-template-columns: 6rem 1fr; }
+    .ls-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  import { Shell, isCommand, commandNames } from "../lib/terminal.ts";
+
+  const shell = new Shell();
+  const $input = document.getElementById("t-input") as HTMLInputElement;
+  const $form = document.getElementById("t-form") as HTMLFormElement;
+  const $out = document.getElementById("t-output") as HTMLDivElement;
+  const $cwd = document.getElementById("t-cwd") as HTMLSpanElement;
+  const $boot = document.getElementById("t-boot") as HTMLDivElement;
+  const $titleBar = document.querySelector("header div.flex-1") as HTMLDivElement | null;
+
+  function updateCwd() {
+    const p = shell.pathString();
+    $cwd.textContent = p;
+    if ($titleBar) $titleBar.textContent = `omkar@portfolio: ${p}`;
+  }
+
+  function syncBootHint() {
+    $boot.style.display = $out.children.length === 0 ? "" : "none";
+  }
+
+  function escapeHTML(s: string) {
+    return s
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function appendEcho(atCwd: string, commandText: string, html: string): HTMLDivElement {
+    const wrap = document.createElement("div");
+    wrap.className = "echo";
+    const prompt = document.createElement("div");
+    prompt.className = "prompt-line";
+    prompt.innerHTML =
+      `<span class="t-user">omkar@portfolio</span><span class="t-dim">:</span>` +
+      `<span class="t-path">${escapeHTML(atCwd)}</span>` +
+      `<span class="t-sigil"> $ </span>` +
+      `<span class="t-text">${escapeHTML(commandText)}</span>`;
+    const body = document.createElement("div");
+    body.className = "echo-output";
+    body.innerHTML = html;
+    wrap.appendChild(prompt);
+    wrap.appendChild(body);
+    $out.appendChild(wrap);
+    syncBootHint();
+    requestAnimationFrame(() => {
+      $input.scrollIntoView({ block: "end", behavior: "smooth" });
+    });
+    return body;
+  }
+
+  function runCommand(text: string) {
+    const cwdBefore = shell.pathString();
+    const result = shell.run(text);
+    if (result.kind === "clear") {
+      $out.innerHTML = "";
+      updateCwd();
+      syncBootHint();
+      return;
+    }
+    if (result.kind === "open") {
+      appendEcho(
+        cwdBefore,
+        text,
+        `<span class="t-muted">opening </span><a class="t-accent" href="${result.href}" target="_blank" rel="noopener">${result.href}</a><span class="t-muted">…</span>`
+      );
+      window.open(result.href, "_blank", "noopener");
+      updateCwd();
+      return;
+    }
+    if (result.kind === "async") {
+      const body = appendEcho(cwdBefore, text, result.placeholder);
+      updateCwd();
+      result.promise
+        .then((resolved) => {
+          if (resolved.kind === "html") {
+            body.innerHTML = resolved.html;
+          } else {
+            body.innerHTML = `<span class="t-warn">unexpected async result</span>`;
+          }
+          requestAnimationFrame(() => {
+            $input.scrollIntoView({ block: "end", behavior: "smooth" });
+          });
+        })
+        .catch((err) => {
+          body.innerHTML = `<span class="t-warn">${escapeHTML(String(err))}</span>`;
+        });
+      return;
+    }
+    appendEcho(cwdBefore, text, result.html);
+    updateCwd();
+  }
+
+  // ---------- submit ----------
+  $form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = $input.value;
+    $input.value = "";
+    if (text.trim()) runCommand(text);
+  });
+
+  // ---------- click-to-run ----------
+  $out.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    const cmdEl = target.closest("[data-cmd]") as HTMLElement | null;
+    if (cmdEl && !cmdEl.matches("a[href]")) {
+      e.preventDefault();
+      const cmd = cmdEl.getAttribute("data-cmd")!;
+      runCommand(cmd);
+      $input.focus();
+    }
+  });
+  $boot.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    const cmdEl = target.closest("[data-cmd]") as HTMLElement | null;
+    if (cmdEl) {
+      e.preventDefault();
+      runCommand(cmdEl.getAttribute("data-cmd")!);
+      $input.focus();
+    }
+  });
+
+  // ---------- keyboard ----------
+  $input.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp") {
+      const prev = shell.prevHistory();
+      if (prev !== null) {
+        e.preventDefault();
+        $input.value = prev;
+        setTimeout(() => $input.setSelectionRange(prev.length, prev.length), 0);
+      }
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      const next = shell.nextHistory();
+      if (next !== null) {
+        e.preventDefault();
+        $input.value = next;
+      }
+      return;
+    }
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const value = $input.value;
+      const cursorAt = $input.selectionStart ?? value.length;
+      const before = value.slice(0, cursorAt);
+      const after = value.slice(cursorAt);
+      const lastSpace = before.lastIndexOf(" ");
+      const token = before.slice(lastSpace + 1);
+      const prefixUpTo = before.slice(0, lastSpace + 1);
+      // First token: complete command names; otherwise complete paths.
+      let candidates: string[];
+      if (lastSpace === -1) {
+        candidates = commandNames().filter((n) => n.startsWith(token));
+      } else {
+        candidates = shell.complete(token);
+      }
+      if (candidates.length === 1) {
+        const completion = candidates[0];
+        // restore base of token (path prefix) when path-completing
+        const tokenBase = token.includes("/")
+          ? token.slice(0, token.lastIndexOf("/") + 1)
+          : "";
+        $input.value = prefixUpTo + tokenBase + completion + after;
+        const newCursor = (prefixUpTo + tokenBase + completion).length;
+        setTimeout(
+          () => $input.setSelectionRange(newCursor, newCursor),
+          0
+        );
+      } else if (candidates.length > 1) {
+        appendEcho(shell.pathString(), value, candidates.map(escapeHTML).join("&nbsp;&nbsp;"));
+      }
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "l") {
+      e.preventDefault();
+      $out.innerHTML = "";
+      syncBootHint();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      $input.focus();
+      return;
+    }
+    if (e.key === "Enter") {
+      // submit will handle it; reset history nav
+      shell.historyIdx = -1;
+    }
+  });
+
+  // ---------- click anywhere refocuses input ----------
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    if (
+      target.tagName === "A" ||
+      target.tagName === "BUTTON" ||
+      target.tagName === "INPUT" ||
+      target.closest("a, button, input, [data-cmd]")
+    )
+      return;
+    $input.focus();
+  });
+
+  // ---------- init ----------
+  updateCwd();
+  $input.focus();
+</script>

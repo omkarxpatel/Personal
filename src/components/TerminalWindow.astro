@@ -1,0 +1,60 @@
+---
+interface Props {
+  title?: string;
+}
+const { title = "omkar@portfolio: ~" } = Astro.props;
+---
+<div
+  class="mx-auto w-full max-w-3xl rounded-lg sm:rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-window)] shadow-2xl shadow-black/50 overflow-hidden"
+>
+  <header
+    class="flex items-center gap-3 px-4 py-3 border-b border-[color:var(--color-border)] bg-[color:var(--color-titlebar)] select-none"
+  >
+    <div class="flex items-center gap-2">
+      <span class="block w-3 h-3 rounded-full bg-[#ff5f57]" aria-hidden="true"></span>
+      <span class="block w-3 h-3 rounded-full bg-[#febc2e]" aria-hidden="true"></span>
+      <span class="block w-3 h-3 rounded-full bg-[#28c840]" aria-hidden="true"></span>
+    </div>
+    <div
+      class="flex-1 text-center text-xs sm:text-sm text-[color:var(--color-muted)] truncate"
+    >
+      {title}
+    </div>
+    <button
+      id="theme-toggle"
+      type="button"
+      aria-label="Toggle theme"
+      class="text-xs text-[color:var(--color-muted)] hover:text-[color:var(--color-text)] transition-colors"
+    >
+      <span data-theme-label>[ light ]</span>
+    </button>
+  </header>
+
+  <main class="px-5 sm:px-10 py-8 sm:py-12">
+    <slot />
+  </main>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const stored = localStorage.getItem("theme");
+  const initial = stored === "light" || stored === "dark" ? stored : "dark";
+  root.setAttribute("data-theme", initial);
+
+  const updateLabel = () => {
+    const label = document.querySelector("[data-theme-label]");
+    if (!label) return;
+    const current = root.getAttribute("data-theme");
+    label.textContent = current === "light" ? "[ dark ]" : "[ light ]";
+  };
+
+  updateLabel();
+
+  document.getElementById("theme-toggle")?.addEventListener("click", () => {
+    const current = root.getAttribute("data-theme") === "light" ? "light" : "dark";
+    const next = current === "light" ? "dark" : "light";
+    root.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+    updateLabel();
+  });
+</script>
