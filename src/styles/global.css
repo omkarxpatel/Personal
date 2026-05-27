@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* dark palette (default) */
+  --color-bg: #050608;
+  --color-window: #0d1117;
+  --color-titlebar: #161b22;
+  --color-border: #30363d;
+  --color-text: #f0f6fc;            /* brighter primary */
+  --color-soft: #c9d1d9;            /* readable secondary, e.g. hints */
+  --color-muted: #8b949e;            /* metadata: dates, locations */
+  --color-dim: #6e7681;              /* the dimmest, decorative only */
+  --color-user: #7ce38b;
+  --color-path: #79c0ff;
+  --color-sigil: #ffa657;
+  --color-accent: #79c0ff;
+  --color-warn: #d29922;
+  --color-success: #7ce38b;
+}
+
+:root[data-theme="light"] {
+  --color-bg: #f6f8fa;
+  --color-window: #ffffff;
+  --color-titlebar: #eaeef2;
+  --color-border: #d0d7de;
+  --color-text: #1f2328;
+  --color-soft: #424a53;
+  --color-muted: #656d76;
+  --color-dim: #8c959f;
+  --color-user: #1a7f37;
+  --color-path: #0969da;
+  --color-sigil: #bc4c00;
+  --color-accent: #0969da;
+  --color-warn: #9a6700;
+  --color-success: #1a7f37;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.7;
+  font-feature-settings: "ss01", "ss02", "calt", "liga";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (min-width: 640px) {
+  html, body {
+    font-size: 17px;
+  }
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+a:hover {
+  border-bottom-color: currentColor;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  background: var(--color-text);
+  vertical-align: -0.15em;
+  margin-left: 0.15em;
+  animation: blink 1s steps(1) infinite;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+body {
+  overflow-x: hidden;
+}
