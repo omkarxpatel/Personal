@@ -37,6 +37,91 @@
   --color-success: #1a7f37;
 }
 
+:root[data-theme="dracula"] {
+  --color-bg: #1e1f29;
+  --color-window: #282a36;
+  --color-titlebar: #21222c;
+  --color-border: #44475a;
+  --color-text: #f8f8f2;
+  --color-soft: #d6d3ce;
+  --color-muted: #a0a0a8;
+  --color-dim: #6272a4;
+  --color-user: #50fa7b;
+  --color-path: #8be9fd;
+  --color-sigil: #ffb86c;
+  --color-accent: #bd93f9;
+  --color-warn: #f1fa8c;
+  --color-success: #50fa7b;
+}
+
+:root[data-theme="nord"] {
+  --color-bg: #232831;
+  --color-window: #2e3440;
+  --color-titlebar: #2a2f3a;
+  --color-border: #3b4252;
+  --color-text: #eceff4;
+  --color-soft: #d8dee9;
+  --color-muted: #8b97a8;
+  --color-dim: #4c566a;
+  --color-user: #a3be8c;
+  --color-path: #88c0d0;
+  --color-sigil: #ebcb8b;
+  --color-accent: #81a1c1;
+  --color-warn: #d08770;
+  --color-success: #a3be8c;
+}
+
+:root[data-theme="gruvbox"] {
+  --color-bg: #1d2021;
+  --color-window: #282828;
+  --color-titlebar: #1f1f1f;
+  --color-border: #3c3836;
+  --color-text: #ebdbb2;
+  --color-soft: #d5c4a1;
+  --color-muted: #a89984;
+  --color-dim: #665c54;
+  --color-user: #b8bb26;
+  --color-path: #83a598;
+  --color-sigil: #fe8019;
+  --color-accent: #fabd2f;
+  --color-warn: #fb4934;
+  --color-success: #b8bb26;
+}
+
+:root[data-theme="solarized-dark"] {
+  --color-bg: #00212b;
+  --color-window: #002b36;
+  --color-titlebar: #003644;
+  --color-border: #073642;
+  --color-text: #eee8d5;
+  --color-soft: #93a1a1;
+  --color-muted: #839496;
+  --color-dim: #586e75;
+  --color-user: #859900;
+  --color-path: #268bd2;
+  --color-sigil: #cb4b16;
+  --color-accent: #2aa198;
+  --color-warn: #b58900;
+  --color-success: #859900;
+}
+
+:root[data-theme="tokyo-night"] {
+  --color-bg: #15161e;
+  --color-window: #1a1b26;
+  --color-titlebar: #16161e;
+  --color-border: #292e42;
+  --color-text: #c0caf5;
+  --color-soft: #a9b1d6;
+  --color-muted: #737aa2;
+  --color-dim: #565f89;
+  --color-user: #9ece6a;
+  --color-path: #7aa2f7;
+  --color-sigil: #ff9e64;
+  --color-accent: #bb9af7;
+  --color-warn: #e0af68;
+  --color-success: #9ece6a;
+}
+
 html,
 body {
   background: var(--color-bg);

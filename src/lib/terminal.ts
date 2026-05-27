@@ -10,6 +10,7 @@ import {
   type FSDir,
 } from "./fs.ts";
 import { renderTop } from "./github.ts";
+import { figletRender } from "./figlet.ts";
 
 export type CmdResult =
   | { kind: "html"; html: string }
@@ -146,31 +147,63 @@ export class Shell {
 }
 
 const commands: Record<string, (args: string[], shell: Shell) => CmdResult> = {
-  help: () => ({
-    kind: "html",
-    html: `
+  help: () => {
+    const groups: Array<[string, Array<[string, string]>]> = [
+      [
+        "navigate",
+        [
+          ["ls [path]", "list directory contents"],
+          ["cd <path>", "change directory"],
+          ["pwd", "print current path"],
+          ["tree", "print full file tree"],
+        ],
+      ],
+      [
+        "read",
+        [
+          ["cat <file>", "print file content"],
+          ["open <file>", "open external file (e.g. resume.pdf)"],
+        ],
+      ],
+      [
+        "status",
+        [
+          ["whoami", "who is this"],
+          ["top", "current github activity"],
+        ],
+      ],
+      [
+        "shell",
+        [
+          ["theme [name]", "switch color theme"],
+          ["figlet <text>", "render text as ascii art"],
+          ["clear", "clear the screen"],
+          ["help", "this list"],
+        ],
+      ],
+    ];
+
+    const sections = groups
+      .map(([title, items]) => {
+        const rows = items
+          .map(
+            ([c, d]) =>
+              `<div class="kv"><dt><a class="t-accent" data-cmd="${esc(c.split(" ")[0])}">${esc(c)}</a></dt><dd class="t-muted">${esc(d)}</dd></div>`
+          )
+          .join("");
+        return `<div class="help-group"><div class="t-muted help-title">${esc(title)}</div>${rows}</div>`;
+      })
+      .join("");
+
+    return {
+      kind: "html",
+      html: `
 <div class="block">
-  <div>commands</div>
-  ${[
-    ["ls [path]", "list directory contents"],
-    ["cd <path>", "change directory (cd .., cd ~, cd work)"],
-    ["pwd", "print current path"],
-    ["cat <file>", "print file content"],
-    ["open <file>", "open external file (e.g. resume.pdf)"],
-    ["tree", "print full file tree"],
-    ["whoami", "who is this"],
-    ["top", "current github activity"],
-    ["clear", "clear the screen"],
-    ["help", "this list"],
-  ]
-    .map(
-      ([c, d]) =>
-        `<div class="kv"><dt><a class="t-accent" data-cmd="${esc(c.split(" ")[0])}">${esc(c)}</a></dt><dd class="t-muted">${esc(d)}</dd></div>`
-    )
-    .join("")}
-  <div class="t-muted t-tip">tip: <span class="t-text">Tab</span> completes filenames · <span class="t-text">↑/↓</span> walks history · click any blue text to run it.</div>
+  <div class="help-grid">${sections}</div>
+  <div class="t-muted t-tip">tip: <span class="t-text">Tab</span> cycles completions · <span class="t-text">→</span> accepts ghost suggestion · <span class="t-text">↑/↓</span> walks history · click any blue text to run it.</div>
 </div>`.trim(),
-  }),
+    };
+  },
 
   ls: (args, shell) => {
     const target = args[0] ?? "";
@@ -305,6 +338,59 @@ const commands: Record<string, (args: string[], shell: Shell) => CmdResult> = {
     kind: "html",
     html: renderTop(),
   }),
+
+  figlet: (args) => {
+    const text = args.join(" ").trim();
+    if (!text) {
+      return {
+        kind: "html",
+        html: `<span class="t-warn">figlet: missing text</span><div class="t-muted t-suggest">try <a class="t-accent" data-cmd="figlet hello">figlet hello</a></div>`,
+      };
+    }
+    if (text.length > 24) {
+      return {
+        kind: "html",
+        html: `<span class="t-warn">figlet: text too long (max 24 chars)</span>`,
+      };
+    }
+    const rendered = figletRender(text);
+    return {
+      kind: "html",
+      html: `<pre class="figlet">${esc(rendered)}</pre>`,
+    };
+  },
+
+  theme: (args) => {
+    const themes = ["dark", "light", "dracula", "nord", "gruvbox", "solarized-dark", "tokyo-night"];
+    const requested = args[0];
+    if (!requested) {
+      const current = document.documentElement.getAttribute("data-theme") ?? "dark";
+      const list = themes
+        .map(
+          (t) =>
+            `<a class="${t === current ? "t-success" : "t-accent"}" data-cmd="theme ${esc(t)}">${esc(t)}${t === current ? " ←" : ""}</a>`
+        )
+        .join("  ");
+      return {
+        kind: "html",
+        html: `<div class="t-muted">current: <span class="t-text">${esc(current)}</span></div><div class="chips" style="margin-top:0.4rem">${list}</div>`,
+      };
+    }
+    if (!themes.includes(requested)) {
+      return {
+        kind: "html",
+        html: `<span class="t-warn">theme: unknown theme '${esc(requested)}'</span><div class="t-muted t-suggest">available: ${themes.join(", ")}</div>`,
+      };
+    }
+    document.documentElement.setAttribute("data-theme", requested);
+    try {
+      localStorage.setItem("theme", requested);
+    } catch {}
+    return {
+      kind: "html",
+      html: `<span class="t-muted">theme set to </span><span class="t-success">${esc(requested)}</span>`,
+    };
+  },
 };
 
 // alias

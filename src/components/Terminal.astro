@@ -16,7 +16,7 @@ const repos = await getRepos();
 
   <div id="t-output" class="output-stream" aria-live="polite" aria-atomic="false"></div>
 
-  <form id="t-form" class="input-row" autocomplete="off"><span class="prompt-line"><span class="t-user">omkar@portfolio</span><span class="t-dim">:</span><span class="t-path" id="t-cwd">~</span><span class="t-sigil"> $&nbsp;</span></span><input id="t-input" type="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="terminal input" enterkeyhint="go" /></form>
+  <form id="t-form" class="input-row" autocomplete="off"><span class="prompt-line"><span class="t-user">omkar@portfolio</span><span class="t-dim">:</span><span class="t-path" id="t-cwd">~</span><span class="t-sigil"> $&nbsp;</span></span><div class="input-area"><div id="t-mirror" class="mirror" aria-hidden="true"><span id="t-typed"></span><span id="t-ghost" class="ghost"></span></div><input id="t-input" type="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="terminal input" enterkeyhint="go" /></div></form>
 </TerminalWindow>
 
 <style is:global>
@@ -91,6 +91,16 @@ const repos = await getRepos();
   }
   pre.top a:hover { text-decoration: underline; }
 
+  /* figlet output */
+  pre.figlet {
+    margin: 0;
+    line-height: 1.05;
+    white-space: pre;
+    overflow-x: auto;
+    color: var(--color-success);
+    font-size: 0.85em;
+  }
+
   /* generic block layout for cat output */
   .block { display: flex; flex-direction: column; gap: 0.5rem; }
   .block .row { color: var(--color-text); }
@@ -115,7 +125,29 @@ const repos = await getRepos();
 
   .links { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-  .t-tip { margin-top: 0.5rem; }
+  .t-tip { margin-top: 0.75rem; }
+
+  /* help layout — small sections in a 2-column grid */
+  .help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem 2rem;
+    margin-top: 0.25rem;
+  }
+  .help-group { display: flex; flex-direction: column; gap: 0.35rem; }
+  .help-title {
+    font-size: 0.78em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.2rem;
+    margin-bottom: 0.25rem;
+  }
+  .help-group .kv { grid-template-columns: 8rem 1fr; }
+  @media (max-width: 480px) {
+    .help-group .kv { grid-template-columns: 7rem 1fr; }
+  }
 
   /* input row */
   .input-row {
@@ -128,16 +160,39 @@ const repos = await getRepos();
     white-space: pre;
     flex-shrink: 0;
   }
-  #t-input {
+  .input-area {
+    position: relative;
     flex: 1;
+    min-width: 0;
+    height: 1.7em;
+  }
+  .input-area .mirror {
+    position: absolute;
+    inset: 0;
+    white-space: pre;
+    overflow: hidden;
+    pointer-events: none;
+    color: var(--color-text);
+  }
+  .input-area .mirror .ghost {
+    color: var(--color-dim);
+  }
+  #t-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
     background: transparent;
     border: none;
     outline: none;
-    color: var(--color-text);
+    color: transparent;
     font: inherit;
     caret-color: var(--color-text);
     padding: 0;
     min-width: 0;
+  }
+  #t-input::selection {
+    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+    color: var(--color-text);
   }
   #t-input:focus { outline: none; }
 
@@ -159,6 +214,8 @@ const repos = await getRepos();
   const $out = document.getElementById("t-output") as HTMLDivElement;
   const $cwd = document.getElementById("t-cwd") as HTMLSpanElement;
   const $boot = document.getElementById("t-boot") as HTMLDivElement;
+  const $typed = document.getElementById("t-typed") as HTMLSpanElement;
+  const $ghost = document.getElementById("t-ghost") as HTMLSpanElement;
   const $titleBar = document.querySelector("header div.flex-1") as HTMLDivElement | null;
 
   function updateCwd() {
@@ -169,6 +226,106 @@ const repos = await getRepos();
 
   function syncBootHint() {
     $boot.style.display = $out.children.length === 0 ? "" : "none";
+  }
+
+  function computeSuggestion(value: string): string {
+    if (!value) return "";
+    // 1. History — most recent command starting with current input
+    for (let i = shell.history.length - 1; i >= 0; i -= 1) {
+      const h = shell.history[i];
+      if (h.startsWith(value) && h.length > value.length) {
+        return h.slice(value.length);
+      }
+    }
+    // 2. Token completion (commands or paths)
+    const lastSpace = value.lastIndexOf(" ");
+    if (lastSpace === -1) {
+      const cmds = commandNames().filter((n) => n.startsWith(value) && n.length > value.length);
+      if (cmds.length === 1) return cmds[0].slice(value.length);
+      // pick shortest among ties for determinism
+      if (cmds.length > 1) {
+        cmds.sort((a, b) => a.length - b.length);
+        return cmds[0].slice(value.length);
+      }
+    } else {
+      const token = value.slice(lastSpace + 1);
+      if (!token) return "";
+      const matches = shell.complete(token);
+      if (matches.length >= 1) {
+        // pick shortest match
+        matches.sort((a, b) => a.length - b.length);
+        const tail = token.includes("/")
+          ? token.slice(token.lastIndexOf("/") + 1)
+          : token;
+        const suggestion = matches[0];
+        if (suggestion.startsWith(tail) && suggestion.length > tail.length) {
+          return suggestion.slice(tail.length);
+        }
+      }
+    }
+    return "";
+  }
+
+  function renderMirror() {
+    const value = $input.value;
+    $typed.textContent = value;
+    const cursorAtEnd =
+      ($input.selectionStart ?? value.length) === value.length &&
+      ($input.selectionEnd ?? value.length) === value.length;
+    $ghost.textContent = cursorAtEnd && !cycleState ? computeSuggestion(value) : "";
+  }
+
+  // Tab cycle state
+  type CycleState = {
+    candidates: string[];
+    idx: number;
+    base: string; // value up to (and including) the path prefix being completed
+    suffix: string; // value after the token (typically empty since we Tab at end)
+  };
+  let cycleState: CycleState | null = null;
+
+  function startTabCycle(forward: boolean) {
+    const value = $input.value;
+    const cursorAt = $input.selectionStart ?? value.length;
+    const before = value.slice(0, cursorAt);
+    const suffix = value.slice(cursorAt);
+    const lastSpace = before.lastIndexOf(" ");
+    const token = before.slice(lastSpace + 1);
+    const prefixUpToToken = before.slice(0, lastSpace + 1);
+    let pathPrefix = "";
+    let namePart = token;
+    if (lastSpace !== -1 && token.includes("/")) {
+      const lastSlash = token.lastIndexOf("/");
+      pathPrefix = token.slice(0, lastSlash + 1);
+      namePart = token.slice(lastSlash + 1);
+    }
+    const candidates =
+      lastSpace === -1
+        ? commandNames().filter((n) => n.startsWith(namePart))
+        : shell.complete(token); // returns just the names, not the path prefix
+    if (candidates.length === 0) return;
+    candidates.sort((a, b) => a.length - b.length || a.localeCompare(b));
+    cycleState = {
+      candidates,
+      idx: forward ? 0 : candidates.length - 1,
+      base: prefixUpToToken + pathPrefix,
+      suffix,
+    };
+    applyCycle();
+  }
+
+  function applyCycle() {
+    if (!cycleState) return;
+    const pick = cycleState.candidates[cycleState.idx];
+    const newValue = cycleState.base + pick + cycleState.suffix;
+    $input.value = newValue;
+    const cursorPos = (cycleState.base + pick).length;
+    setTimeout(() => $input.setSelectionRange(cursorPos, cursorPos), 0);
+    renderMirror();
+  }
+
+  function cancelCycle() {
+    cycleState = null;
   }
 
   function escapeHTML(s: string) {
@@ -249,7 +406,19 @@ const repos = await getRepos();
     e.preventDefault();
     const text = $input.value;
     $input.value = "";
+    renderMirror();
     if (text.trim()) runCommand(text);
+  });
+
+  // ---------- mirror sync ----------
+  $input.addEventListener("input", () => {
+    cancelCycle();
+    renderMirror();
+  });
+  $input.addEventListener("keyup", renderMirror);
+  $input.addEventListener("click", () => {
+    cancelCycle();
+    renderMirror();
   });
 
   // ---------- click-to-run ----------
@@ -275,12 +444,28 @@ const repos = await getRepos();
 
   // ---------- keyboard ----------
   $input.addEventListener("keydown", (e) => {
+    // Accept ghost suggestion: RightArrow or End at end of input
+    if ((e.key === "ArrowRight" || e.key === "End") && $ghost.textContent) {
+      const atEnd =
+        ($input.selectionStart ?? 0) === $input.value.length &&
+        ($input.selectionEnd ?? 0) === $input.value.length;
+      if (atEnd) {
+        e.preventDefault();
+        $input.value = $input.value + $ghost.textContent;
+        renderMirror();
+        return;
+      }
+    }
     if (e.key === "ArrowUp") {
       const prev = shell.prevHistory();
       if (prev !== null) {
         e.preventDefault();
+        cancelCycle();
         $input.value = prev;
-        setTimeout(() => $input.setSelectionRange(prev.length, prev.length), 0);
+        setTimeout(() => {
+          $input.setSelectionRange(prev.length, prev.length);
+          renderMirror();
+        }, 0);
       }
       return;
     }
@@ -288,40 +473,21 @@ const repos = await getRepos();
       const next = shell.nextHistory();
       if (next !== null) {
         e.preventDefault();
+        cancelCycle();
         $input.value = next;
+        renderMirror();
       }
       return;
     }
     if (e.key === "Tab") {
       e.preventDefault();
-      const value = $input.value;
-      const cursorAt = $input.selectionStart ?? value.length;
-      const before = value.slice(0, cursorAt);
-      const after = value.slice(cursorAt);
-      const lastSpace = before.lastIndexOf(" ");
-      const token = before.slice(lastSpace + 1);
-      const prefixUpTo = before.slice(0, lastSpace + 1);
-      // First token: complete command names; otherwise complete paths.
-      let candidates: string[];
-      if (lastSpace === -1) {
-        candidates = commandNames().filter((n) => n.startsWith(token));
+      if (cycleState) {
+        cycleState.idx = e.shiftKey
+          ? (cycleState.idx - 1 + cycleState.candidates.length) % cycleState.candidates.length
+          : (cycleState.idx + 1) % cycleState.candidates.length;
+        applyCycle();
       } else {
-        candidates = shell.complete(token);
-      }
-      if (candidates.length === 1) {
-        const completion = candidates[0];
-        // restore base of token (path prefix) when path-completing
-        const tokenBase = token.includes("/")
-          ? token.slice(0, token.lastIndexOf("/") + 1)
-          : "";
-        $input.value = prefixUpTo + tokenBase + completion + after;
-        const newCursor = (prefixUpTo + tokenBase + completion).length;
-        setTimeout(
-          () => $input.setSelectionRange(newCursor, newCursor),
-          0
-        );
-      } else if (candidates.length > 1) {
-        appendEcho(shell.pathString(), value, candidates.map(escapeHTML).join("&nbsp;&nbsp;"));
+        startTabCycle(!e.shiftKey);
       }
       return;
     }
@@ -357,5 +523,6 @@ const repos = await getRepos();
 
   // ---------- init ----------
   updateCwd();
+  renderMirror();
   $input.focus();
 </script>
