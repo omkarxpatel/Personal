@@ -8,6 +8,7 @@ import {
   findByName,
   type FSNode,
   type FSDir,
+  type FSFile,
 } from "./fs.ts";
 import { renderTop } from "./github.ts";
 import { figletRender } from "./figlet.ts";
@@ -170,6 +171,16 @@ const commands: Record<string, (args: string[], shell: Shell) => CmdResult> = {
         [
           ["whoami", "who is this"],
           ["top", "current github activity"],
+        ],
+      ],
+      [
+        "shortcuts",
+        [
+          ["resume", "open my resume (pdf)"],
+          ["work", "print all experience"],
+          ["projects", "print all projects"],
+          ["education", "print education"],
+          ["contact", "how to reach me"],
         ],
       ],
       [
@@ -392,6 +403,23 @@ const commands: Record<string, (args: string[], shell: Shell) => CmdResult> = {
     };
   },
 };
+
+// shortcuts: one-word paths to the stuff visitors actually want
+function catDir(path: string): CmdResult {
+  const r = resolve(path, []);
+  if (!r || r.node.type !== "dir") return notFound(path);
+  const html = r.node.children
+    .filter((c): c is FSFile => c.type === "file")
+    .map((c) => c.render())
+    .join("\n");
+  return { kind: "html", html };
+}
+
+commands.resume = (_args, shell) => commands.open(["~/resume.pdf"], shell);
+commands.contact = (_args, shell) => commands.cat(["~/contact.md"], shell);
+commands.education = (_args, shell) => commands.cat(["~/education.md"], shell);
+commands.work = () => catDir("work");
+commands.projects = () => catDir("projects");
 
 // alias
 commands.htop = commands.top;

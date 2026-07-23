@@ -1,4 +1,4 @@
-import { site, about, work, projects, skills } from "../data/site.ts";
+import { site, about, education, work, projects, skills } from "../data/site.ts";
 
 export type FSFile = {
   type: "file";
@@ -74,15 +74,28 @@ function formatAbout(): string {
   return `<p>${esc(about).replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>")}</p>`;
 }
 
+function formatEducation(): string {
+  return education
+    .map((e) =>
+      `
+<div class="block">
+  <div class="row">${heading(e.school)} <span class="t-muted">— ${esc(e.degree.toLowerCase())}</span></div>
+  <div class="t-muted">${esc(e.location)} · ${esc(e.dates)}</div>
+  ${e.notes.length ? `<ul class="bullets">${e.notes.map((n) => `<li><span class="t-sigil">·</span> ${esc(n)}</li>`).join("")}</ul>` : ""}
+</div>`.trim()
+    )
+    .join("\n");
+}
+
 function formatSkills(): string {
   const row = (label: string, items: readonly string[]) =>
     `<div class="kv"><dt class="t-muted">${esc(label)}</dt><dd>${items.map(tag).join("")}</dd></div>`;
   return `
 <dl class="skills">
   ${row("languages", skills.languages)}
-  ${row("frameworks", skills.frameworks)}
-  ${row("ai/genai", skills.ai)}
-  ${row("tools", skills.tools)}
+  ${row("web & backend", skills.web)}
+  ${row("ai/llm", skills.ai)}
+  ${row("systems & infra", skills.infra)}
 </dl>`.trim();
 }
 
@@ -109,6 +122,7 @@ export const root: FSDir = {
   name: "~",
   children: [
     { type: "file", name: "about.md", size: "1k", render: formatAbout },
+    { type: "file", name: "education.md", size: "1k", render: formatEducation },
     {
       type: "dir",
       name: "work",

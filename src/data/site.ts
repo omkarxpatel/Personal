@@ -1,7 +1,7 @@
 export const site = {
   name: "Omkar Patel",
   handle: "omkarxpatel",
-  title: "cs @ northeastern · founding eng @ storiloom",
+  title: "cs @ northeastern · data eng intern @ rysun labs · fullstack eng @ storiloom",
   location: "boston, ma · sf bay area",
   email: "omkarxpatel@gmail.com",
   github: "https://github.com/omkarxpatel",
@@ -9,31 +9,58 @@ export const site = {
   resume: "/Omkar_Patel_Resume.pdf",
 };
 
-export const about = `Freshman at Northeastern, studying CS with an AI concentration. 60+ college credits earned via De Anza dual enrollment during high school. Currently sole engineer on the Storiloom MVP. Returning to Rysun Labs as a Data Engineer Intern this summer.`;
+export const about = `CS major (AI concentration) at Northeastern, class of 2028. 60+ college credits earned via De Anza dual enrollment during high school. Currently a Data Engineer Intern (AI/ML) at Rysun Labs, building catalog-to-AI-discoverability pipelines, and a Fullstack Engineer at Storiloom, where I built the WhatsApp-based family-story platform end-to-end.`;
+
+export const education = [
+  {
+    school: "Northeastern University",
+    degree: "Computer Science (Concentration in AI), B.S.",
+    location: "boston, ma",
+    dates: "aug 2025 — apr 2028",
+    notes: [],
+  },
+  {
+    school: "De Anza College",
+    degree: "Dual Enrollment",
+    location: "san jose, ca",
+    dates: "aug 2021 — jul 2025",
+    notes: [
+      "60+ college credits over 4 years of dual enrollment, including senior year of high school as a full-time college student via Middle College.",
+    ],
+  },
+] as const;
 
 export const work = [
   {
-    slug: "storiloom",
-    role: "Founding Engineer",
-    company: "Storiloom",
-    location: "remote",
-    dates: "feb 2026 — present",
+    slug: "rysun-labs-2026",
+    role: "Data Engineer Intern, AI/ML",
+    company: "Rysun Labs",
+    location: "milpitas, ca",
+    dates: "may 2026 — aug 2026",
     bullets: [
-      "Sole engineer turning an early-stage product concept into a production-ready full-stack web platform.",
-      "Architecting backend systems — database design, API integrations, server-side logic — to support the core product.",
-      "Working directly with the founder, shipping fast and shaping the technical direction of the platform.",
+      "Engineered a multi-tenant TypeScript platform that converts ecommerce catalogs (tested up to 46K products) into AI-discoverability feeds via a 5-stage crawl-to-delivery pipeline.",
+      "Designed the LLM enrichment and semantic search layer (embedding retrieval + LLM re-ranking) and a 192-query eval harness to benchmark it against classical search baselines.",
     ],
   },
   {
-    slug: "rysun-labs",
-    role: "Software Engineer Intern → Data Engineer Intern (returning)",
+    slug: "storiloom",
+    role: "Fullstack Engineer",
+    company: "Storiloom",
+    location: "hybrid",
+    dates: "feb 2026 — aug 2026",
+    bullets: [
+      "Built and shipped a WhatsApp-based app that helps families collect and preserve their stories (React/TypeScript on Vercel), giving relatives a private, shared archive of memories.",
+      "Built every core system end-to-end: a secure WhatsApp webhook driving a conversational state machine, passwordless magic-link auth for webview pages, and the full memory-capture flow — text/voice/photo intake, transcription and polish, and delivery to family members.",
+    ],
+  },
+  {
+    slug: "rysun-labs-2024",
+    role: "Software Engineer Intern",
     company: "Rysun Labs",
     location: "milpitas, ca",
-    dates: "jun 2024 — aug 2024 · returning summer 2026",
+    dates: "jun 2024 — aug 2024",
     bullets: [
-      "Contributed to internal AI-powered tools and production web applications during a 10-week internship.",
-      "Built a full-stack GenAI model comparison platform (Flask + React) — side-by-side evaluation of OpenAI, Gemini, and Llama for structured email generation.",
-      "Returning summer 2026 as Data Engineer Intern.",
+      "Designed and shipped an internal full-stack GenAI comparison platform (Flask + React) that runs one prompt across OpenAI GPT, Google Gemini, and Meta Llama in parallel and renders the outputs side-by-side for email and code generation.",
     ],
   },
   {
@@ -43,8 +70,8 @@ export const work = [
     location: "san jose, ca",
     dates: "feb 2023 — apr 2025",
     bullets: [
-      "Built a web platform managing student participation in job-shadowing — applications, placements, and partner-org coordination.",
-      "Promoted to Lead Developer for the 2024–25 session; platform served 560+ students across 115 companies.",
+      "Built a TypeScript web platform managing student applications, placements, and partner-org coordination, with an admin dashboard for program staff.",
+      "Promoted to Lead Developer; led a team of 5 student developers and enabled 560+ students to job-shadow at 115 companies.",
     ],
   },
 ] as const;
@@ -63,22 +90,23 @@ export const projects = [
   },
   {
     name: "rot",
-    tagline: "custom programming language with a python-backed transpiler",
-    stack: ["Python", "lexer", "parser", "ast"],
-    metrics: "v1 transpiler · interpreter + VM planned",
+    tagline: "custom programming language with two execution engines",
+    stack: ["Python", "Next.js", "Pyodide", "framer-motion"],
+    metrics: "5,000+ LOC · 819 unit tests · live playground",
     blurb:
-      "A small custom language built to learn how languages are designed end-to-end. `.rot` source is tokenized against a keyword table, parsed, and transformed into Python. Roadmap: replace `exec()` with a real interpreter, then a bytecode VM, then native codegen.",
+      "A custom language with a tree-walking AST interpreter and a stack-based bytecode VM, built as a teaching tool for how interpreters work under the hood. Supports error handling, f-strings, 35+ built-ins, and rustc-style error messages — runnable in an animated playground with live stack visualization.",
     links: [
+      { label: "playground", href: "https://rot-theta.vercel.app/" },
       { label: "github", href: "https://github.com/omkarxpatel/ROT" },
     ],
   },
   {
     name: "summary-bot",
     tagline: "ai catch-up for high-volume discord servers",
-    stack: ["Python", "Discord.py", "OpenAI", "GCP", "Firebase"],
-    metrics: "800+ guilds · 875k+ users",
+    stack: ["Python", "Discord.py", "OpenAI", "Google TTS", "GCP", "Firebase"],
+    metrics: "1,500+ servers · 875k+ users · ~20M words analyzed",
     blurb:
-      "A scalable Discord bot that summarizes long channel conversations in seconds. Built to handle bursty traffic across hundreds of large, active servers without dropping context.",
+      "A scalable Discord bot that summarizes long channel conversations in seconds. Deployed across 1,500+ servers over 3 years, handling bursty traffic across large, active communities without dropping context.",
     links: [],
   },
   {
@@ -117,8 +145,8 @@ export const projects = [
 ] as const;
 
 export const skills = {
-  languages: ["Java", "Python", "JavaScript", "SQL/MySQL", "HTML/CSS"],
-  frameworks: ["React.js", "Node.js", "Flask", "Discord.py", "Pandas", "Tailwind"],
-  ai: ["OpenAI GPT", "Anthropic Claude", "Google Gemini", "Meta Llama"],
-  tools: ["Git", "Docker", "AWS", "Google Cloud Platform", "VS Code"],
+  languages: ["Python", "Java", "JavaScript", "TypeScript", "SQL"],
+  web: ["React", "Next.js", "Node.js", "Flask", "REST APIs", "PostgreSQL", "Firebase"],
+  ai: ["OpenAI", "Anthropic", "Gemini", "Llama", "RAG", "LLM Evals", "Embeddings", "MCP", "Vector Search"],
+  infra: ["Docker", "GCP", "Git", "GitHub Actions", "CI/CD", "Playwright", "Vitest"],
 };
