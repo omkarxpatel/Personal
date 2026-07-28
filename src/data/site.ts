@@ -1,7 +1,7 @@
 export const site = {
   name: "Omkar Patel",
   handle: "omkarxpatel",
-  title: "cs @ northeastern · data eng intern @ rysun labs · fullstack eng @ storiloom",
+  title: "cs @ northeastern · ai eng intern @ rysun labs · fullstack eng @ storiloom",
   location: "boston, ma · sf bay area",
   email: "omkarxpatel@gmail.com",
   github: "https://github.com/omkarxpatel",
@@ -9,7 +9,7 @@ export const site = {
   resume: "/Omkar_Patel_Resume.pdf",
 };
 
-export const about = `CS major (AI concentration) at Northeastern, class of 2028. 60+ college credits earned via De Anza dual enrollment during high school. Currently a Data Engineer Intern (AI/ML) at Rysun Labs, building catalog-to-AI-discoverability pipelines, and a Fullstack Engineer at Storiloom, where I built the WhatsApp-based family-story platform end-to-end.`;
+export const about = `CS major (AI concentration) at Northeastern, class of 2028. 60+ college credits earned via De Anza dual enrollment during high school. Currently an AI Engineer Intern at Rysun Labs, building catalog-to-AI-discoverability pipelines, and a Fullstack Engineer at Storiloom, where I built the WhatsApp-based family-story platform end-to-end.`;
 
 export const education = [
   {
@@ -33,13 +33,14 @@ export const education = [
 export const work = [
   {
     slug: "rysun-labs-2026",
-    role: "Data Engineer Intern, AI/ML",
+    role: "AI Engineer Intern",
     company: "Rysun Labs",
     location: "milpitas, ca",
     dates: "may 2026 — aug 2026",
     bullets: [
-      "Engineered a multi-tenant TypeScript platform that converts ecommerce catalogs (tested up to 46K products) into AI-discoverability feeds via a 5-stage crawl-to-delivery pipeline.",
-      "Designed the LLM enrichment and semantic search layer (embedding retrieval + LLM re-ranking) and a 192-query eval harness to benchmark it against classical search baselines.",
+      "Modeled a 40–90% lift in LLM citation rate from catalog enrichment and 70% recovery of zero-result searches from semantic retrieval, projecting up to 5x growth in AI-referred traffic.",
+      "Delivered a multi-tenant 5-stage crawl-to-delivery pipeline that emits structured catalog files built for frontier LLMs to ingest directly, raising model confidence in client product data (tested on catalogs up to 46K products).",
+      "Packaged the semantic search layer (embedding retrieval + LLM re-ranking) as a drop-in component for client storefronts, benchmarked against classical search with a 192-query eval harness.",
     ],
   },
   {
@@ -47,10 +48,10 @@ export const work = [
     role: "Fullstack Engineer",
     company: "Storiloom",
     location: "hybrid",
-    dates: "feb 2026 — aug 2026",
+    dates: "feb 2026 — present",
     bullets: [
-      "Built and shipped a WhatsApp-based app that helps families collect and preserve their stories (React/TypeScript on Vercel), giving relatives a private, shared archive of memories.",
-      "Built every core system end-to-end: a secure WhatsApp webhook driving a conversational state machine, passwordless magic-link auth for webview pages, and the full memory-capture flow — text/voice/photo intake, transcription and polish, and delivery to family members.",
+      "Launched a zero-install platform that gathers relatives' stories into one private timeline and surfaces the connections between them — onboarding 450+ families and preserving 6,000+ stories in the first three months.",
+      "Developed end-to-end: a secure WhatsApp webhook driving a conversational state machine, passwordless magic-link auth for webview pages, and the full memory-capture flow — text/voice/photo/video intake, transcription and polish, and delivery to family members.",
     ],
   },
   {
@@ -70,8 +71,8 @@ export const work = [
     location: "san jose, ca",
     dates: "feb 2023 — apr 2025",
     bullets: [
-      "Built a TypeScript web platform managing student applications, placements, and partner-org coordination, with an admin dashboard for program staff.",
-      "Promoted to Lead Developer; led a team of 5 student developers and enabled 560+ students to job-shadow at 115 companies.",
+      "Enabled 560+ students to job-shadow at 115 companies by building the platform that matched students to partner organizations for the program's annual job-shadow day.",
+      "Promoted to Lead Developer, leading 5 student developers to build all four role-based portals — students, recruiters, host employees, and program staff — each with its own permissions and workflows.",
     ],
   },
 ] as const;
@@ -92,9 +93,9 @@ export const projects = [
     name: "rot",
     tagline: "custom programming language with two execution engines",
     stack: ["Python", "Next.js", "Pyodide", "framer-motion"],
-    metrics: "5,000+ LOC · 819 unit tests · live playground",
+    metrics: "15K+ LOC · 819 unit tests · live playground",
     blurb:
-      "A custom language with a tree-walking AST interpreter and a stack-based bytecode VM, built as a teaching tool for how interpreters work under the hood. Supports error handling, f-strings, 35+ built-ins, and rustc-style error messages — runnable in an animated playground with live stack visualization.",
+      "A custom language with a tree-walking AST interpreter and a 38-opcode stack-based bytecode VM, built as a teaching tool for how interpreters work under the hood. Supports error handling, f-strings, 41 built-ins, and rustc-style error messages — runnable in an animated playground with live stack visualization.",
     links: [
       { label: "playground", href: "https://rot-theta.vercel.app/" },
       { label: "github", href: "https://github.com/omkarxpatel/ROT" },
