@@ -143,7 +143,7 @@ export const root: FSDir = {
     },
     { type: "file", name: "skills.txt", size: "1k", render: formatSkills },
     { type: "file", name: "contact.md", size: "1k", render: formatContact },
-    { type: "external", name: "resume.pdf", href: site.resume, size: "104k" },
+    { type: "external", name: "resume.pdf", href: site.resume, size: "153k" },
   ],
 };
 
@@ -200,7 +200,7 @@ export function segsToPath(segs: string[]): string {
   return segs.length ? `~/${segs.join("/")}` : "~";
 }
 
-/** Find every node in the tree whose name matches exactly, returns absolute paths like "work/storiloom". */
+/** Find every node in the tree whose name matches exactly, returns absolute paths like "work/kinoraa". */
 export function findByName(name: string): { path: string; node: FSNode }[] {
   const out: { path: string; node: FSNode }[] = [];
   function walk(dir: FSDir, segs: string[]) {

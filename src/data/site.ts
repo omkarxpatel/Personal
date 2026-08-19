@@ -1,23 +1,25 @@
 export const site = {
   name: "Omkar Patel",
   handle: "omkarxpatel",
-  title: "cs @ northeastern · ai eng intern @ rysun labs · fullstack eng @ storiloom",
-  location: "boston, ma · sf bay area",
+  title: "cs @ northeastern · ai eng intern @ rysun labs · founding eng @ kinoraa",
+  location: "boston, ma · sf bay area · open to relocate",
   email: "omkarxpatel@gmail.com",
   github: "https://github.com/omkarxpatel",
   linkedin: "https://www.linkedin.com/in/omkarxpatel/",
   resume: "/Omkar_Patel_Resume.pdf",
 };
 
-export const about = `CS major (AI concentration) at Northeastern, class of 2028. 60+ college credits earned via De Anza dual enrollment during high school. Currently an AI Engineer Intern at Rysun Labs, building catalog-to-AI-discoverability pipelines, and a Fullstack Engineer at Storiloom, where I built the WhatsApp-based family-story platform end-to-end.`;
+export const about = `CS at Northeastern, class of 2028. 60+ college credits earned via De Anza dual enrollment during high school. Currently an AI Engineer Intern at Rysun Labs, building crawl-to-retrieval pipelines that make product catalogs legible to LLMs, and the founding engineer at Kinoraa, where I built the WhatsApp-based family-story platform end-to-end.`;
 
 export const education = [
   {
     school: "Northeastern University",
-    degree: "Computer Science (Concentration in AI), B.S.",
+    degree: "Computer Science, B.S.",
     location: "boston, ma",
     dates: "aug 2025 — apr 2028",
-    notes: [],
+    notes: [
+      "Relevant coursework: Data Structures & Algorithms, Discrete Mathematics, Logic & Computation, Probability & Statistics, Mathematical Foundations of AI, Object-Oriented Programming, x86 Assembly & Architecture.",
+    ],
   },
   {
     school: "De Anza College",
@@ -25,7 +27,7 @@ export const education = [
     location: "san jose, ca",
     dates: "aug 2021 — jul 2025",
     notes: [
-      "60+ college credits over 4 years of dual enrollment, including senior year of high school as a full-time college student via Middle College.",
+      "Earned 60+ college credits over 4 years of dual enrollment, attending full-time as a high school senior.",
     ],
   },
 ] as const;
@@ -36,22 +38,22 @@ export const work = [
     role: "AI Engineer Intern",
     company: "Rysun Labs",
     location: "milpitas, ca",
-    dates: "may 2026 — aug 2026",
+    dates: "may 2026 — present",
     bullets: [
-      "Modeled a 40–90% lift in LLM citation rate from catalog enrichment and 70% recovery of zero-result searches from semantic retrieval, projecting up to 5x growth in AI-referred traffic.",
-      "Delivered a multi-tenant 5-stage crawl-to-delivery pipeline that emits structured catalog files built for frontier LLMs to ingest directly, raising model confidence in client product data (tested on catalogs up to 46K products).",
-      "Packaged the semantic search layer (embedding retrieval + LLM re-ranking) as a drop-in component for client storefronts, benchmarked against classical search with a 192-query eval harness.",
+      "Built a multi-tenant pipeline that crawls e-commerce storefronts (tested up to 46K products) and generates LLM-facing deliverables from enriched product data, raising parsing accuracy from 16% to 84%.",
+      "Shipped a drop-in hybrid search API on Elasticsearch, fusing vector + keyword retrieval with RRF, then LLM re-ranking; +4.1% NDCG@5 over a BM25-only baseline on natural-language queries.",
+      "Targeted AI-referred traffic through two paths, LLM-facing deliverables and hybrid retrieval, with UTM tagging across 7 formats to measure the lift from each.",
     ],
   },
   {
-    slug: "storiloom",
-    role: "Fullstack Engineer",
-    company: "Storiloom",
-    location: "hybrid",
+    slug: "kinoraa",
+    role: "Founding Engineer",
+    company: "Kinoraa",
+    location: "milpitas, ca",
     dates: "feb 2026 — present",
     bullets: [
-      "Launched a zero-install platform that gathers relatives' stories into one private timeline and surfaces the connections between them — onboarding 450+ families and preserving 6,000+ stories in the first three months.",
-      "Developed end-to-end: a secure WhatsApp webhook driving a conversational state machine, passwordless magic-link auth for webview pages, and the full memory-capture flow — text/voice/photo/video intake, transcription and polish, and delivery to family members.",
+      "Sole engineer on a zero-install platform that gathers relatives' stories into one private timeline and surfaces the connections between them; 450+ families logged 6,000+ stories in the first three months.",
+      "Developed end-to-end: a signature-verified WhatsApp webhook driving a conversational state machine (invite, join, capture, share, reply, consent), passwordless QR sign-in with single-use webview links, and the memory-capture flow from text/voice/photo/video intake to delivery across role-based family circles.",
     ],
   },
   {
@@ -71,13 +73,45 @@ export const work = [
     location: "san jose, ca",
     dates: "feb 2023 — apr 2025",
     bullets: [
-      "Enabled 560+ students to job-shadow at 115 companies by building the platform that matched students to partner organizations for the program's annual job-shadow day.",
-      "Promoted to Lead Developer, leading 5 student developers to build all four role-based portals — students, recruiters, host employees, and program staff — each with its own permissions and workflows.",
+      "Built the platform behind the program's job-shadow day, matching 560+ students to 115 companies.",
+      "Promoted to Lead Developer, leading 5 student developers to ship and maintain three annual releases.",
     ],
   },
 ] as const;
 
 export const projects = [
+  {
+    name: "wizgto",
+    tagline: "poker gto study tool built on a local cfr solver",
+    stack: ["TypeScript", "Rust", "CFR Solver", "Chrome Extension"],
+    metrics: "~84.4% of rated matches won on chipzen",
+    blurb:
+      "A study tool on a local Rust solver that plays hands out to converge on an unexploitable strategy. Tracks your gameplay to analyze playstyle and leaks, then builds an exploitative model to practice against. Its autonomous bot ships to Chipzen, a bot-vs-bot arena, winning ~84.4% of rated matches under no-egress 256 MB and 2s-per-decision limits.",
+    links: [
+      { label: "github", href: "https://github.com/omkarxpatel/wizgto" },
+    ],
+  },
+  {
+    name: "rot",
+    tagline: "custom programming language with two execution engines",
+    stack: ["Python", "Pytest", "Next.js", "Pyodide", "framer-motion"],
+    metrics: "15K+ LOC · 819 unit tests · live playground",
+    blurb:
+      "A language built end-to-end, from lexing through recursive-descent and Pratt parsing into a source-positioned AST, with no parser libraries or exec(). Two execution engines stay in sync: a tree-walking interpreter as the reference and a 38-opcode stack VM compiled from the same AST. The browser animates tokenizing, parsing, and evaluation line by line as the program runs.",
+    links: [
+      { label: "playground", href: "https://rot-theta.vercel.app/" },
+      { label: "github", href: "https://github.com/omkarxpatel/ROT" },
+    ],
+  },
+  {
+    name: "summary-bot",
+    tagline: "ai catch-up for high-volume discord servers",
+    stack: ["Python", "Discord.py", "OpenAI", "Google TTS", "GCP", "Firebase"],
+    metrics: "1,800+ servers · 875k+ users · ~20M words analyzed",
+    blurb:
+      "A scalable Discord bot that summarizes long channel conversations in seconds. Deployed across 1,800+ servers over 3 years, handling bursty traffic across large, active communities without dropping context.",
+    links: [],
+  },
   {
     name: "electron",
     tagline: "macOS audio EQ + visualizer + spotify control, in one window",
@@ -88,27 +122,6 @@ export const projects = [
     links: [
       { label: "github", href: "https://github.com/omkarxpatel/Electron" },
     ],
-  },
-  {
-    name: "rot",
-    tagline: "custom programming language with two execution engines",
-    stack: ["Python", "Next.js", "Pyodide", "framer-motion"],
-    metrics: "15K+ LOC · 819 unit tests · live playground",
-    blurb:
-      "A custom language with a tree-walking AST interpreter and a 38-opcode stack-based bytecode VM, built as a teaching tool for how interpreters work under the hood. Supports error handling, f-strings, 41 built-ins, and rustc-style error messages — runnable in an animated playground with live stack visualization.",
-    links: [
-      { label: "playground", href: "https://rot-theta.vercel.app/" },
-      { label: "github", href: "https://github.com/omkarxpatel/ROT" },
-    ],
-  },
-  {
-    name: "summary-bot",
-    tagline: "ai catch-up for high-volume discord servers",
-    stack: ["Python", "Discord.py", "OpenAI", "Google TTS", "GCP", "Firebase"],
-    metrics: "1,500+ servers · 875k+ users · ~20M words analyzed",
-    blurb:
-      "A scalable Discord bot that summarizes long channel conversations in seconds. Deployed across 1,500+ servers over 3 years, handling bursty traffic across large, active communities without dropping context.",
-    links: [],
   },
   {
     name: "prompt-enhancer",
@@ -146,8 +159,8 @@ export const projects = [
 ] as const;
 
 export const skills = {
-  languages: ["Python", "Java", "JavaScript", "TypeScript", "SQL"],
-  web: ["React", "Next.js", "Node.js", "Flask", "REST APIs", "PostgreSQL", "Firebase"],
-  ai: ["OpenAI", "Anthropic", "Gemini", "Llama", "RAG", "LLM Evals", "Embeddings", "MCP", "Vector Search"],
-  infra: ["Docker", "GCP", "Git", "GitHub Actions", "CI/CD", "Playwright", "Vitest"],
+  languages: ["Python", "Java", "C++", "Rust", "TypeScript", "JavaScript", "SQL"],
+  web: ["React", "Next.js", "Node.js", "Flask", "REST APIs", "PostgreSQL", "Elasticsearch", "Firebase"],
+  ai: ["NLP", "RAG", "Hybrid & Vector Search", "Re-ranking", "Embeddings", "LLM Evals", "MCP", "PyTorch", "NumPy"],
+  infra: ["Docker", "GCP", "Git", "GitHub Actions", "CI/CD", "Pytest", "Vitest", "Playwright"],
 };

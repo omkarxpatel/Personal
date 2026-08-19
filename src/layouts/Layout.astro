@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { site as profile, about, education, work, skills } from "../data/site.ts";
 
 interface Props {
   title?: string;
@@ -7,8 +8,38 @@ interface Props {
 }
 const {
   title = "Omkar Patel",
-  description = "cs @ northeastern · data eng intern @ rysun labs · fullstack eng @ storiloom — portfolio of omkar patel",
+  description = "cs @ northeastern · ai eng intern @ rysun labs · founding eng @ kinoraa — portfolio of omkar patel",
 } = Astro.props;
+
+const base = (Astro.site?.origin ?? "https://omkarpatel.xyz").replace(/\/$/, "");
+
+// schema.org/Person for machine readers. Built from src/data/site.ts so it
+// tracks the resume automatically. Phone is deliberately omitted — it lives
+// in the PDF, but there's no reason to hand it to scrapers in structured form.
+const personLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: profile.name,
+  alternateName: profile.handle,
+  url: base,
+  email: `mailto:${profile.email}`,
+  description: about,
+  jobTitle: work.filter((w) => w.dates.includes("present")).map((w) => w.role),
+  worksFor: work
+    .filter((w) => w.dates.includes("present"))
+    .map((w) => ({ "@type": "Organization", name: w.company })),
+  alumniOf: education.map((e) => ({
+    "@type": "EducationalOrganization",
+    name: e.school,
+  })),
+  knowsAbout: [
+    ...skills.languages,
+    ...skills.web,
+    ...skills.ai,
+    ...skills.infra,
+  ],
+  sameAs: [profile.github, profile.linkedin],
+};
 ---
 <!doctype html>
 <html lang="en" data-theme="dark">
@@ -17,6 +48,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="Plain-text version for LLMs" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -35,6 +67,12 @@ const {
     <meta name="twitter:image" content="https://omkarvpatel.netlify.app/og.png" />
 
     <title>{title}</title>
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(personLd)}
+    ></script>
 
     <script
       is:inline
